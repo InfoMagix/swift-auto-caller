@@ -1,6 +1,6 @@
-# simplest working version that loops through a folder and plays each file once
-# adds a schedule.  Schedule does not work quite right though and only playes files once per play_period
-# now loops through the folder for each time period.  not convinced schedule is correct
+# This script automatically plays audio files from a specified folder according to a defined schedule.
+# It continuously loops through the folder and plays each file in alphanumeric order during the scheduled time periods.
+# If no scheduled time period is active, the script waits for the next one.
 
 import vlc
 import os
