@@ -5,7 +5,7 @@ import vlc
 import os
 
 # Define variables
-folder_path = 'bird_calls'
+folder_path = 'timmy_sounds'
 
 # Print list of files
 media_files = [f for f in os.listdir(folder_path) if f.endswith('.mp3')]
