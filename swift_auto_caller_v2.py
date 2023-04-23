@@ -16,16 +16,19 @@ print(folder_path)
 
 # Define functions
 def play_mp3(folder_path):
+    print(f"Checking files in: {folder_path}")
     media_files = [f for f in os.listdir(folder_path) if f.endswith('.mp3')]
-    #instance = vlc.Instance('--aout=alsa')
-    instance = vlc.Instance('--aout=alsa --alsa-audio-device="hw:0,0"')
-    instance = vlc.Instance('--aout=alsa', '--alsa-audio-device=hw:0,0')
-
+    instance = vlc.Instance('--aout=alsa')
     player = instance.media_list_player_new()
     media_list = instance.media_list_new([os.path.join(folder_path, f) for f in media_files])
     player.set_media_list(media_list)
     player.play()
+    mrl = player.get_media_player().get_media().get_mrl()
+    file_name = os.path.basename(mrl[len('file://'):])
+    print(f"Now playing: {file_name}")
     return player
+
+
 
 def schedule_playback(folder_path, playback_schedule):
     player = None
