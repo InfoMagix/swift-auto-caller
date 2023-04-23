@@ -1,3 +1,7 @@
+# simplest working version that loops through a folder and plays each file once
+# adds a schedule.  Schedule does not work quite right though and only playes files once per play_period
+
+
 import vlc
 import os
 import schedule
