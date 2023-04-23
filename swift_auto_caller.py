@@ -1,33 +1,39 @@
-import subprocess
-
-def play_mp3(file_path):
-    subprocess.run(['mpg123', file_path])
-
-from flask import Flask, request, render_template
+import vlc
+import os
 import schedule
 import time
-import threading
-from datetime import datetime
 
-app = Flask(__name__)
+# Declare variables
+folder_path = 'bird_calls'
+playback_schedule = [
+    ("00:00", "01:00"),
+    ("06:00", "09:00"),
+    ("12:00", "15:00"),
+    ("18:00", "21:00")
+]
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+print(folder_path)
 
-@app.route('/schedule', methods=['POST'])
-def schedule_play():
-    play_time = request.form.get('play_time')
-    file_path = request.form.get('file_path')
-    schedule.every().day.at(play_time).do(play_mp3, file_path)
-    return 'Scheduled to play {} at {}'.format(file_path, play_time)
+# Define functions
+def play_mp3(folder_path):
+    media_files = [f for f in os.listdir(folder_path) if f.endswith('.mp3')]
+    instance = vlc.Instance()
+    player = instance.media_list_player_new()
+    media_list = instance.media_list_new([os.path.join(folder_path, f) for f in media_files])
+    player.set_media_list(media_list)
+    player.play()
+    return player
 
-def run_schedule():
+def schedule_playback(folder_path, playback_schedule):
+    player = None
+
+    for start_time, stop_time in playback_schedule:
+        schedule.every().day.at(start_time).do(lambda: (player.stop() if player else None), player=play_mp3(folder_path))
+        schedule.every().day.at(stop_time).do(lambda: player.stop() if player else None)
+
     while True:
         schedule.run_pending()
         time.sleep(1)
 
-if __name__ == '__main__':
-    threading.Thread(target=run_schedule).start()
-    app.run(host='0.0.0.0', port=5000)
-
+# Run the script
+schedule_playback(folder_path, playback_schedule)
