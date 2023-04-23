@@ -22,7 +22,7 @@ playback_schedule = [
     ("16:13", "16:15"),
     ("16:16", "16:17"),
     ("16:20", "17:30"),
-    ("19:00", "20:30"),
+    ("18:00", "20:30"),
     ("22:17", "23:00")
 ]
 
@@ -36,9 +36,12 @@ print("")
 
 # Print list of files
 media_files = [f for f in os.listdir(folder_path) if f.endswith('.mp3')]
+media_files.sort()  # Add this line to sort the media files in alphanumeric order
+
 print(f"Files in {folder_path}:")
 for f in media_files:
     print(f)
+
 
 # Define functions
 def play_mp3(folder_path, media_file, start_time, end_time):
