@@ -84,25 +84,25 @@ You *could* do it that way which is arguably easier, but much *less fun* IMO!.  
 
 ## Pi configuration
 
-
 1. Download and write the Buster Lite image to the SD card using Raspberry Pi Imager.
-2. In the Config section of Raspberry Pi Imager, set the device name, Wi-Fi password and login for the pi user.
+2. In the Config section of Raspberry Pi Imager, set the device name, Wi-Fi password, and login for the pi user.
 3. Run `sudo apt-get update` and `sudo apt-get upgrade`.
 4. Install git: `sudo apt-get install git`.
-5. Clone the GitHub repository: `git clone https://github.com/InfoMagix/swift-auto-caller.git`.
+5. Clone the GitHub repository: `git clone https://github.com/InfoMagix/swift-auto-caller.git` (Replace the URL with the actual repository URL if different).
 6. Install pip for Python 3: `sudo apt install python3-pip`.
 7. Install virtual environments for Python 3: `sudo apt-get install python3-venv`.
 8. Navigate to the cloned `swift-auto-caller` directory and add a virtual environment: `python3 -m venv .venv`.
 9. Activate the virtual environment: `source .venv/bin/activate`.
 10. Install VLC and its Python bindings: `sudo apt-get install vlc python3-vlc`.
 11. Install the `schedule` package: `pip install schedule`.
-12. Install the audio DAC shim by following the guide on their website
+12. Install the audio DAC shim by following the guide on their website.
 13. Reboot the Raspberry Pi: `sudo reboot`.
-14. Run `aplay -l` to check that the audio DAC shim is recognised.
-15. Test the script by running `/run.sh`.  To run it with no debug info returned, or as `/run.sh --debug` to get debug info including schedule, the current track being played.  You might need to run `chmod +x run.sh` first if it give 'access denied' errors.
-16. Set to run at startup: Modify rc.local
+14. Navigate back to the `swift-auto-caller` directory.
+15. Run `aplay -l` to check that the audio DAC shim is recognized.
+16. Test the script by running `./run.sh`. To run it with no debug info returned or as `./run.sh --debug` to get debug info including schedule, the current track being played. You might need to run `chmod +x run.sh` first if it gives 'access denied' errors.
+17. Set to run at startup: Modify rc.local
     `sudo nano /etc/rc.local`
 
     Add this before the `"exit 0"` line: 
     
-    `cd /home/pi/swift-auto-caller && ./run.sh --debug &` 
+    `cd /home/pi/swift-auto-caller && ./run.sh --debug &`
