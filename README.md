@@ -99,4 +99,10 @@ You *could* do it that way which is arguably easier, but much *less fun* IMO!.  
 12. Install the audio DAC shim by following the guide on their website
 13. Reboot the Raspberry Pi: `sudo reboot`.
 14. Run `aplay -l` to check that the audio DAC shim is recognised.
-15. Run the `swift_auto_caller.py` script in the virtual environment to play audio.
+15. Test the script by running `/run.sh`.  To run it with no debug info returned, or as `/run.sh --debug` to get debug info including schedule, the current track being played.  You might need to run `chmod +x run.sh` first if it give 'access denied' errors.
+16. Set to run at startup: Modify rc.local
+    `sudo nano /etc/rc.local`
+
+    Add this before the `"exit 0"` line: 
+    
+    `/home/pi/swift-auto-caller/run.sh &` 
