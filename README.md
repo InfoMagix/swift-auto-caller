@@ -105,4 +105,4 @@ You *could* do it that way which is arguably easier, but much *less fun* IMO!.  
 
     Add this before the `"exit 0"` line: 
     
-    `/home/pi/swift-auto-caller/run.sh --debug &` 
+    `cd /home/pi/swift-auto-caller && ./run.sh --debug &` 
