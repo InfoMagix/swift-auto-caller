@@ -96,6 +96,13 @@ You *could* do it that way which is arguably easier, but much *less fun* IMO!.  
 10. Install VLC and its Python bindings: `sudo apt-get install vlc python3-vlc`.
 11. Install the `schedule` package: `pip install schedule`.
 12. Install the audio DAC shim by following the guide on their website.
+
+    `git clone https://github.com/pimoroni/pirate-audio`
+
+    `cd pirate-audio/mopidy`
+
+    `sudo ./install.sh`
+
 13. Reboot the Raspberry Pi: `sudo reboot`.
 14. Navigate back to the `swift-auto-caller` directory.
 15. Run `aplay -l` to check that the audio DAC shim is recognized.
