@@ -29,12 +29,10 @@ debug_print("===========================\n")
 debug_print(f"Current time is {time.strftime('%H:%M:%S')}\n")
 
 # Define variables
-folder_path = 'timmy_sounds'
+folder_path = 'bird_calls'
 playback_schedule = [
     ("07:00", "08:00"),
-    ("18:00", "20:00"),
-    ("21:00", "22:00"),
-    ("22:17", "23:59")
+    ("17:00", "18:00")
 ]
 
 # Sort the playback_schedule in ascending order
