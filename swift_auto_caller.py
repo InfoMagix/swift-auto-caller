@@ -8,22 +8,33 @@ import schedule
 import time
 import datetime
 import threading
+import argparse
+
+# Parse command-line arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('--debug', action='store_true', help='Enable debug mode')
+args = parser.parse_args()
+
+# Debug switch
+debug = args.debug
+
+def debug_print(*args, **kwargs):
+    if debug:
+        print(*args, **kwargs)
 
 # Print system time as a debug measure
-print(f"Swift Caller auto player")
-print("===========================\n")
+debug_print(f"Swift Caller auto player")
+debug_print("===========================\n")
 
-print(f"Current time is {time.strftime('%H:%M:%S')}\n")
-#print("")
+debug_print(f"Current time is {time.strftime('%H:%M:%S')}\n")
 
 # Define variables
 folder_path = 'timmy_sounds'
 playback_schedule = [
-    ("16:13", "16:15"),
-    ("16:16", "16:17"),
-    ("16:20", "17:30"),
-    ("18:00", "20:30"),
-    ("22:17", "23:00")
+    ("07:00", "08:00"),
+    ("18:00", "20:00"),
+    ("21:00", "22:00"),
+    ("22:17", "23:59")
 ]
 
 # Sort the playback_schedule in ascending order
@@ -31,16 +42,16 @@ playback_schedule.sort()
 
 # Playback schedule for debug purposes
 for i, (start_time, end_time) in enumerate(playback_schedule):
-    print(f"Time slot {i+1}: {start_time} - {end_time}")
-print("")
+    debug_print(f"Time slot {i+1}: {start_time} - {end_time}")
+debug_print("")
 
 # Print list of files
 media_files = [f for f in os.listdir(folder_path) if f.endswith('.mp3')]
-media_files.sort()  # Add this line to sort the media files in alphanumeric order
+media_files.sort()  # Sort the media files in alphanumeric order
 
-print(f"Files in {folder_path}:")
+debug_print(f"Files in {folder_path}:")
 for f in media_files:
-    print(f)
+    debug_print(f)
 
 
 # Define functions
@@ -51,7 +62,7 @@ def play_mp3(folder_path, media_file, start_time, end_time):
     player.set_media(media)
     player.play()
     current_time = time.strftime('%H:%M:%S')
-    print(f"Now playing at {current_time}: {media_file}")
+    debug_print(f"Now playing at {current_time}: {media_file}")
     while True:
         state = player.get_state()
         if state == vlc.State.Ended:
@@ -75,7 +86,7 @@ def play_media_files_in_loop():
 
             if scheduled_start_time <= now < scheduled_end_time:
                 play_period = (scheduled_start_time, scheduled_end_time)
-                print(f"\nPlaying between {start_time} and {end_time}")
+                debug_print(f"\nPlaying between {start_time} and {end_time}")
                 break
 
         if play_period is not None:
@@ -91,7 +102,7 @@ def play_media_files_in_loop():
                     next_start_time, next_end_time = start_time, end_time
                     break
 
-            print(f"Waiting for next play period: {next_start_time} - {next_end_time}")
+            debug_print(f"Waiting for next play period: {next_start_time} - {next_end_time}")
             time.sleep(1)
 
 # Run the script
