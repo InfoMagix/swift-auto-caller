@@ -106,3 +106,7 @@ You *could* do it that way which is arguably easier, but much *less fun* IMO!.  
     Add this before the `"exit 0"` line: 
     
     `cd /home/pi/swift-auto-caller && ./run.sh --debug &`
+
+OR if you dont fancy doing it manually, most of the above is included in `install_swift_auto_caller.sh`.  Give it execute permissions using `chmod +x install_swift_auto_caller.sh`. Run the script using `./install_swift_auto_caller.sh`.
+
+Note that the bit that installs the Audio DAC is taken from the Pimoroni website so might at some potin change, refer to https://shop.pimoroni.com/products/audio-dac-shim-line-out for details if there are issues with that.
