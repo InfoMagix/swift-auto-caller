@@ -33,7 +33,8 @@ folder_path = 'bird_calls'
 playback_schedule = [
     ("07:00", "08:00"),
     ("17:00", "18:00"),
-    ("23:40", "23:45"),    
+    ("23:40", "23:45"), 
+    ("23:55", "23:59"),        
 ]
 
 # Sort the playback_schedule in ascending order
