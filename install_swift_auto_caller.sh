@@ -3,8 +3,6 @@
 #configures a new SD card that already has the raspberry pi o/s installed on it
 # This assumes a 'lite' version of that o/s has been used otherwsie some packages may already be availabel (eg git)
 
-#!/bin/bash
-
 # Update packages
 sudo apt-get update
 sudo apt-get upgrade -y
