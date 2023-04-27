@@ -3,17 +3,8 @@ Plays swift calls at specified intervals
 
 ## Swift Call Player
 - Objective: Play swift calls on a schedule
-- Python script implementation:
-    - Use the VLC library to play mp3 files.
-    - Use the `schedule` library for scheduling playback.
-    - Playback schedule: List of start and end times for daily play periods.
-    - Sort the playback schedule in ascending order.
-    - Loop through the mp3 file folder and play each mp3 file in alphanumeric order.
-    - Determine the current play period based on the system time.
-    - If the script starts outside a play period, print the next play period to the console.
-    - Schedule playback for each media file at the start time of each play period.
-    - Continuously loop through the folder and play the mp3 files during each play period.
-    - Provide debug information, such as scheduled events and playback times.
+
+Hardware and software setup detailed at the end of this
 
 
 ## The Swiftomatic 3000
@@ -82,20 +73,32 @@ You *could* do it that way which is arguably easier, but much *less fun* IMO!.  
 * Control call settings: Schedule On/Off via a web page
 
 
-## Pi configuration
+## Pi configuration part 1 - Do this first
 
 1. Download and write the Buster Lite image to the SD card using Raspberry Pi Imager.
 2. In the Config section of Raspberry Pi Imager, set the device name, Wi-Fi password, and login for the pi user.
-3. Run `sudo apt-get update` and `sudo apt-get upgrade`.
-4. Install git: `sudo apt-get install git`.
-5. Clone the GitHub repository: `git clone https://github.com/InfoMagix/swift-auto-caller.git` (Replace the URL with the actual repository URL if different).
-6. Install pip for Python 3: `sudo apt install python3-pip`.
-7. Install virtual environments for Python 3: `sudo apt-get install python3-venv`.
-8. Navigate to the cloned `swift-auto-caller` directory and add a virtual environment: `python3 -m venv .venv`.
-9. Activate the virtual environment: `source .venv/bin/activate`.
-10. Install VLC and its Python bindings: `sudo apt-get install vlc python3-vlc`.
-11. Install the `schedule` package: `pip install schedule`.
-12. Install the audio DAC shim by following the guide on their website.
+
+## Pi configuration part 2a - hands off install
+
+run the following command from a terminal window, having logged in as the pi user with the credentials setup 
+
+`curl -sSL https://raw.githubusercontent.com/InfoMagix/swift-auto-caller/main/install_swift_auto_caller.sh | bash`
+
+
+
+## Pi configuration part 2b - walk-through install
+
+
+1. Run `sudo apt-get update` and `sudo apt-get upgrade`.
+2. Install git: `sudo apt-get install git`.
+3. Clone the GitHub repository: `git clone https://github.com/InfoMagix/swift-auto-caller.git` (Replace the URL with the actual repository URL if different).
+4. Install pip for Python 3: `sudo apt install python3-pip`.
+5. Install virtual environments for Python 3: `sudo apt-get install python3-venv`.
+6. Navigate to the cloned `swift-auto-caller` directory and add a virtual environment: `python3 -m venv .venv`.
+7. Activate the virtual environment: `source .venv/bin/activate`.
+8. Install VLC and its Python bindings: `sudo apt-get install vlc python3-vlc`.
+9. Install the `schedule` and `vlc` package within the virtual environment: `pip install schedule python-vlc`.
+10. Install the audio DAC shim by following the guide on their website.
 
     `git clone https://github.com/pimoroni/pirate-audio`
 
@@ -103,11 +106,11 @@ You *could* do it that way which is arguably easier, but much *less fun* IMO!.  
 
     `sudo ./install.sh`
 
-13. Reboot the Raspberry Pi: `sudo reboot`.
-14. Navigate back to the `swift-auto-caller` directory.
-15. Run `aplay -l` to check that the audio DAC shim is recognized.
-16. Test the script by running `./run.sh`. To run it with no debug info returned or as `./run.sh --debug` to get debug info including schedule, the current track being played. You might need to run `chmod +x run.sh` first if it gives 'access denied' errors.
-17. Set to run at startup: Modify rc.local
+11. Reboot the Raspberry Pi: `sudo reboot`.
+12. Navigate back to the `swift-auto-caller` directory.
+13. Run `aplay -l` to check that the audio DAC shim is recognized.
+14. Test the script by running `./run.sh`. To run it with no debug info returned or as `./run.sh --debug` to get debug info including schedule, the current track being played. You might need to run `chmod +x run.sh` first if it gives 'access denied' errors.
+15. Set to run at startup: Modify rc.local
     `sudo nano /etc/rc.local`
 
     Add this before the `"exit 0"` line: 
@@ -116,4 +119,4 @@ You *could* do it that way which is arguably easier, but much *less fun* IMO!.  
 
 OR if you dont fancy doing it manually, most of the above is included in `install_swift_auto_caller.sh`.  Give it execute permissions using `chmod +x install_swift_auto_caller.sh`. Run the script using `./install_swift_auto_caller.sh`.
 
-Note that the bit that installs the Audio DAC is taken from the Pimoroni website so might at some potin change, refer to https://shop.pimoroni.com/products/audio-dac-shim-line-out for details if there are issues with that.
+Note that the bit that installs the Audio DAC is taken from the Pimoroni website so might at some point change, refer to https://shop.pimoroni.com/products/audio-dac-shim-line-out for details if there are issues with that.
