@@ -2,6 +2,20 @@
 # It continuously loops through the folder and plays each file in alphanumeric order during the scheduled time periods.
 # If no scheduled time period is active, the script waits for the next one.
 
+
+# - Python script implementation:
+#     - Use the VLC library to play mp3 files.
+#     - Use the `schedule` library for scheduling playback.
+#     - Playback schedule: List of start and end times for daily play periods.
+#     - Sort the playback schedule in ascending order.
+#     - Loop through the mp3 file folder and play each mp3 file in alphanumeric order.
+#     - Determine the current play period based on the system time.
+#     - If the script starts outside a play period, print the next play period to the console.
+#     - Schedule playback for each media file at the start time of each play period.
+#     - Continuously loop through the folder and play the mp3 files during each play period.
+#     - Provide debug information, such as scheduled events and playback times.
+
+
 import vlc
 import os
 import schedule
