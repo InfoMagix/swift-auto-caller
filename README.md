@@ -1,11 +1,8 @@
 # swift-auto-caller
-Plays swift calls at specified intervals
+Plays swift calls at specified intervals.  Audio feed to oan amp from a raspberry pi + DAC
 
 ## Swift Call Player
 - Objective: Play swift calls on a schedule
-
-Hardware and software setup detailed at the end of this
-
 
 ## The Swiftomatic 3000
 This is the (moderately bodged) finished article:
