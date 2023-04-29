@@ -23,7 +23,10 @@ import time
 import datetime
 import threading
 import argparse
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+from flask import Flask, request, redirect, url_for, jsonify, render_template, flash, send_from_directory
+from mutagen.mp3 import MP3
+from datetime import timedelta
+
 
 import datetime # used by get_current_schedule(), get_next_schedule()
 
@@ -209,6 +212,26 @@ def stop_playback():
     global stop_flag
     stop_flag = True
 
+# get mp3 file durations of ALL mp3 files
+def get_durations(mp3_files):
+    durations = []
+    for mp3_file in mp3_files:
+        audio = MP3(os.path.join(app.config['UPLOAD_FOLDER'], mp3_file))
+        duration = timedelta(seconds=int(audio.info.length))
+        durations.append(str(duration))
+    return durations
+
+# get duration of a single mp3 file
+def get_duration_singlefile(file_path):
+    audio = MP3(file_path)
+    duration = timedelta(seconds=int(audio.info.length))
+    return str(duration)
+
+
+def get_sorted_mp3_files():
+    mp3_files = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) if f.lower().endswith('.mp3')]
+    mp3_files.sort()
+    return mp3_files
 
 
 
@@ -282,9 +305,15 @@ def delete_row(row_index):
         del playback_schedule[row_index]
     return redirect(url_for('index'))
 
-@app.route('/get_currently_playing')
-def get_currently_playing_route():
-    return jsonify({"currently_playing": get_currently_playing_mp3()})
+@app.route('/get_currently_playing', methods=['GET'])
+def get_currently_playing():
+    currently_playing = get_currently_playing_mp3()
+    if currently_playing:
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], currently_playing)
+        duration = get_duration_singlefile(file_path)
+        return jsonify(currently_playing=currently_playing, duration=duration)
+    else:
+        return jsonify(currently_playing="Nothing is playing right now.")
 
 
 # upload page routes..
@@ -299,8 +328,12 @@ def upload_file():
             flash('File uploaded successfully')
             return redirect(url_for('upload_file'))
     
-    mp3_files = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) if f.lower().endswith('.mp3')]
-    return render_template('upload.html', mp3_files=mp3_files)
+    mp3_files = get_sorted_mp3_files()
+    durations = get_durations(mp3_files)
+    mp3_files_with_durations = zip(mp3_files, durations)
+    return render_template('upload.html', mp3_files_with_durations=mp3_files_with_durations)
+
+
 
 @app.route('/delete_file/<path:filename>', methods=['POST'])
 def delete_file(filename):
@@ -320,6 +353,11 @@ def upload():
     mp3_files = get_all_mp3_files()
     sorted_mp3_files = sorted(mp3_files)
     return render_template('upload.html', mp3_files=sorted_mp3_files)
+
+@app.route('/uploaded_file/<path:filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+
 
 
 # Run the script in separate threads
