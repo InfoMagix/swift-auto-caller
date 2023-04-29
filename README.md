@@ -80,7 +80,6 @@ The main difference is that they get an audio source via USB input mode.  You lo
 
 You *could* do it that way which is arguably easier, but much *less fun* IMO!.  Other things I'm considering that you cant do with a timer plug...
 * Turn calls off when its raining by using data from a Weather API
-* Control call settings: Schedule On/Off via a web page
 
 
 ## Pi configuration part 1 - Do this first
