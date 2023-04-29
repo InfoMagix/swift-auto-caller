@@ -2,7 +2,7 @@
 
 
 ## The Swiftomatic 3000
-* Plays swift calls at specified intervals.  
+* Plays swift calls.   Playback interval and audio files configuration via webpage
 * Uses a Raspberry zero W + DAC to provide an Aux in audio feed to an inexpensive amp which in turn plays calls via a connected speaker.
 
 * Swift call playback scheduling and  swift call audio file upload is user-configurable via interactive  web pages 
