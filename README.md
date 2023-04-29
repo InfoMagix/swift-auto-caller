@@ -1,19 +1,34 @@
 # swift-auto-caller
-Plays swift calls at specified intervals.  Audio feed to oan amp from a raspberry pi + DAC
 
-## Swift Call Player
-- Objective: Play swift calls on a schedule
+
 
 ## The Swiftomatic 3000
-This is the (moderately bodged) finished article:
+* Plays swift calls at specified intervals.  
+* Uses a Raspberry zero W + DAC to provide an Aux in audio feed to an inexpensive amp which in turn plays calls via a connected speaker.
+
+* Swift call playback scheduling and  swift call audio file upload is user-configurable via interactive  web pages 
 
 ![Alt text](images/swiftomatic_3000.jpeg)
 
 It consists of an Amp (the thing with the volume knob), a raspberry pi that is it s 'brains', a DAC ('Digital to Analogue Converter') and a speaker.  There's some cabling, a power supply and a micro SD card in the mix too. 
 
-Here is the business end:
+Here is the business end, its quite high up...
 
-![Alt text](images/Box_in_situ.jpeg)
+![Alt text](images/Box_in_situ_2.jpeg)
+
+## User interface
+The Raspberry pi host a web site where playback scheduling and audio files can be managed.  Its acessible on its local network via:
+`http://<devicename>.local:5000` where `<devicename>` is the name that you call the raspberry pi in configuration part 1 section below.
+
+### **Playback scheduling:**
+Daily start and stop times can be set via a convenient web site.
+Shows current schedule, next schedule and the name of the file currently being played:
+![Alt text](images/GIU_schedule.jpeg)
+
+
+### **Audio file upload:**
+Upload any mp3 file, and review those already present.
+![Alt text](images/GUI_audioFileManagememt.jpeg)
 
 ## Parts List...
 
@@ -73,7 +88,7 @@ You *could* do it that way which is arguably easier, but much *less fun* IMO!.  
 ## Pi configuration part 1 - Do this first
 
 1. Download and write the Buster Lite image to the SD card using Raspberry Pi Imager.
-2. In the Config section of Raspberry Pi Imager, set the device name, Wi-Fi password, and login for the pi user.
+2. In the Config section of Raspberry Pi Imager, set the device name, Wi-Fi password, and login for the pi user.  Note that `<devicename>` is how you'll connect to it on your local network.
 
 ## Pi configuration part 2a - hands off install
 
