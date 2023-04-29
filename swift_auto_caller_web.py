@@ -24,6 +24,55 @@ import datetime
 import threading
 import argparse
 from flask import Flask, render_template, request, redirect, url_for
+import datetime # used by get_current_schedule(), get_next_schedule()
+
+# to hold the name of the mp3 that is currently playing
+currently_playing = ""
+
+
+def get_current_schedule():
+    now_dt = datetime.datetime.now()
+    now = now_dt.time()
+    for start_time, end_time in playback_schedule:
+        start_hour, start_minute = map(int, start_time.split(':'))
+        end_hour, end_minute = map(int, end_time.split(':'))
+        start_time_dt = now_dt.replace(hour=start_hour, minute=start_minute, second=0, microsecond=0).timetz()
+        end_time_dt = now_dt.replace(hour=end_hour, minute=end_minute, second=0, microsecond=0).timetz()
+        if start_time_dt <= now <= end_time_dt:
+            return {"start_time": start_time, "end_time": end_time}
+    return {"start_time": "N/A", "end_time": "N/A"}
+
+
+
+def get_next_schedule():
+    now_dt = datetime.datetime.now()
+    now = now_dt.time()
+    next_start_time = None
+    next_end_time = None
+    min_time_diff = float('inf')
+
+    for start_time, end_time in playback_schedule:
+        start_hour, start_minute = map(int, start_time.split(':'))
+        scheduled_start_time = now_dt.replace(hour=start_hour, minute=start_minute, second=0, microsecond=0).time()
+
+        if scheduled_start_time > now:
+            time_diff = (datetime.datetime.combine(datetime.date.today(), scheduled_start_time) - datetime.datetime.combine(datetime.date.today(), now)).seconds
+            if time_diff < min_time_diff:
+                min_time_diff = time_diff
+                next_start_time = start_time
+                next_end_time = end_time
+
+    if next_start_time and next_end_time:
+        return {"start_time": next_start_time, "end_time": next_end_time}
+    return {"start_time": "N/A", "end_time": "N/A"}
+
+
+def get_currently_playing_mp3():
+    # Replace the logic to get the currently playing MP3 file based on your application
+    return currently_playing
+
+
+# -----------------------
 
 
 # Parse command-line arguments
@@ -45,8 +94,8 @@ debug_print("===========================\n")
 debug_print(f"Current time is {time.strftime('%H:%M:%S')}\n")
 
 # Define variables
-#folder_path = 'bird_calls'
-folder_path = 'timmy_sounds'
+folder_path = 'bird_calls'
+#folder_path = 'timmy_sounds'
 
 # this is the default schedule
 playback_schedule = [
@@ -101,6 +150,7 @@ def play_mp3(folder_path, media_file, start_time, end_time):
     instance.release()
 
 def play_media_files_in_loop():
+    global currently_playing
     while not stop_flag:
         now = datetime.datetime.now()
         play_period = None
@@ -121,7 +171,9 @@ def play_media_files_in_loop():
 
         if play_period is not None:
             for media_file in media_files:
+                currently_playing = media_file
                 play_mp3(folder_path, media_file, start_time, end_time)
+            currently_playing = ""
         else:
             next_start_time, next_end_time = playback_schedule[0]
             for start_time, end_time in playback_schedule:
@@ -144,12 +196,25 @@ def stop_playback():
     global stop_flag
     stop_flag = True
 
+
+
+
 # Flask app and routes
 app = Flask(__name__)
 
+# @app.route('/')
+# def index():
+#     return render_template('index.html', playback_schedule=playback_schedule)
+
+# Update the index route to pass the current_schedule, next_schedule, and currently_playing to the template
 @app.route('/')
 def index():
-    return render_template('index.html', playback_schedule=playback_schedule)
+    current_schedule = get_current_schedule()
+    next_schedule = get_next_schedule()
+    currently_playing = get_currently_playing_mp3()
+    return render_template('index.html', playback_schedule=playback_schedule, current_schedule=current_schedule, next_schedule=next_schedule, currently_playing=currently_playing)
+
+
 
 
 @app.route('/update_schedule', methods=['POST'])
@@ -200,6 +265,7 @@ def delete_row(row_index):
     if 0 <= row_index < len(playback_schedule):
         del playback_schedule[row_index]
     return redirect(url_for('index'))
+
 
 
 # Run the script in separate threads
