@@ -23,7 +23,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # Install Python packages
-pip install schedule python-vlc Flask
+pip install schedule python-vlc Flask mutagen
 
 # Make the run.sh script executable
 chmod +x run.sh
