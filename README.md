@@ -92,43 +92,23 @@ You *could* do it that way which is arguably easier, but much *less fun* IMO!.  
 
 ## Pi configuration part 2a - hands off install
 
-run the following command from a terminal window, having logged in as the pi user with the credentials setup 
+This command will install everything:
 
 `curl -sSL https://raw.githubusercontent.com/InfoMagix/swift-auto-caller/main/install_swift_auto_caller.sh | bash`
 
-
-
-## Pi configuration part 2b - walk-through install
-
+Alternatively, you can do the following:
 
 1. Run `sudo apt-get update` and `sudo apt-get upgrade`.
 2. Install git: `sudo apt-get install git`.
-3. Clone the GitHub repository: `git clone https://github.com/InfoMagix/swift-auto-caller.git` (Replace the URL with the actual repository URL if different).
-4. Install pip for Python 3: `sudo apt install python3-pip`.
-5. Install virtual environments for Python 3: `sudo apt-get install python3-venv`.
-6. Navigate to the cloned `swift-auto-caller` directory and add a virtual environment: `python3 -m venv .venv`.
-7. Activate the virtual environment: `source .venv/bin/activate`.
-8. Install VLC and its Python bindings: `sudo apt-get install vlc python3-vlc`.
-9. Install the `schedule` and `vlc` package within the virtual environment: `pip install schedule python-vlc`.
-10. Install the audio DAC shim by following the guide on their website.
+3. Clone the GitHub repository: `git clone https://github.com/InfoMagix/swift-auto-caller.git` 
+4. Give install_swift_auto_caller.sh execute permissions using `chmod +x install_swift_auto_caller.sh`. 
+5. Run the script using `./install_swift_auto_caller.sh`.
 
-    `git clone https://github.com/pimoroni/pirate-audio`
+OR you can manually step through install_swift_auto_caller.sh
 
-    `cd pirate-audio/mopidy`
+Some troubleshooting:
 
-    `sudo ./install.sh`
+* Run `aplay -l` to check that the audio DAC shim is recognized.
+* the `swift_auto_caller_web.py` script run the process.  To test its running as expected, navigate to `swift-auto-caller` then activate the virtual environment with `source .venv/bin/activate` then run ths script with debug setting turned on: `python swift_auto_caller_web.py --debug` 
 
-11. Reboot the Raspberry Pi: `sudo reboot`.
-12. Navigate back to the `swift-auto-caller` directory.
-13. Run `aplay -l` to check that the audio DAC shim is recognized.
-14. Test the script by running `./run.sh`. To run it with no debug info returned or as `./run.sh --debug` to get debug info including schedule, the current track being played. You might need to run `chmod +x run.sh` first if it gives 'access denied' errors.
-15. Set to run at startup: Modify rc.local
-    `sudo nano /etc/rc.local`
-
-    Add this before the `"exit 0"` line: 
-    
-    `cd /home/pi/swift-auto-caller && ./run.sh --debug &`
-
-OR if you dont fancy doing it manually, most of the above is included in `install_swift_auto_caller.sh`.  Give it execute permissions using `chmod +x install_swift_auto_caller.sh`. Run the script using `./install_swift_auto_caller.sh`.
-
-Note that the bit that installs the Audio DAC is taken from the Pimoroni website so might at some point change, refer to https://shop.pimoroni.com/products/audio-dac-shim-line-out for details if there are issues with that.
+Note that part of the setup script that installs the Audio DAC is taken from the Pimoroni website so might at some point change, refer to https://shop.pimoroni.com/products/audio-dac-shim-line-out for details if there are issues with that.
