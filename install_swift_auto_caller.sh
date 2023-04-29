@@ -29,7 +29,7 @@ pip install schedule python-vlc Flask
 chmod +x run.sh
 
 # Modify rc.local to start the script at boot
-sudo sed -i 's|^exit 0|cd /home/pi/swift-auto-caller \&\& ./run.sh --debug \&\n\nexit 0|' /etc/rc.local
+sudo sed -i 's|^exit 0|cd /home/pi/swift-auto-caller \&\& ./run.sh \&\n\nexit 0|' /etc/rc.local
 
 # Install the audio DAC
 # Note that this is taken off the vendor's website and might change, 
