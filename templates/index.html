@@ -21,6 +21,11 @@
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('currently_playing').textContent = data.currently_playing;
+                    if (data.duration) {
+                        document.getElementById('currently_playing_duration').textContent = data.duration;
+                    } else {
+                        document.getElementById('currently_playing_duration').textContent = '';
+                    }
                 });
         }
 
@@ -59,7 +64,7 @@
 
         <div class="my-3">
             <form action="/add_row" method="POST" class="button-form" style="display: inline;">
-                <button type="submit" class="btn btn-success">Add Row</button>
+                <button type="submit" class="btn btn-success">Add Schedule Row</button>
             </form>
         </div>
 
@@ -75,7 +80,7 @@
                 </form>
             </div>
             <div class="col-sm">
-                <a href="/upload" class="btn btn-info">Upload MP3</a>
+                <a href="/upload" class="btn btn-info">Manage mp3 audio files</a>
             </div>
         </div>
 
@@ -87,8 +92,11 @@
         <p>Daily Start Time: {{ next_schedule.start_time }}</p>
         <p>Daily End Time: {{ next_schedule.end_time }}</p>
         
-        <h2 class="my-4">Currently Playing MP3</h2>
+        <h2>Currently Playing MP3</h2>
         <p id="currently_playing">{{ currently_playing }}</p>
+        <p>Duration: <span id="currently_playing_duration">{{ duration }}</span></p>
+        
+        
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
