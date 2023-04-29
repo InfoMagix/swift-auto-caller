@@ -4,30 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Swift Auto Caller</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .button-form {
             display: inline;
-        }
-
-        .button {
-            width: 100%;
-            height: 40px;
-        }
-
-        .control-buttons {
-            width: 27%;
-        }
-
-        .add-row-container {
-            display: inline-block;
-            text-align: center;
-            width: 5%;
-        }
-
-        .schedule-container {
-            display: inline-block;
-            text-align: center;
-            width: 43%;
         }
     </style>
     <script>
@@ -35,65 +15,83 @@
             document.getElementById("delete_row_form").action = "/delete_row/" + row_index;
             document.getElementById("delete_row_form").submit();
         }
+
+        function updateCurrentlyPlaying() {
+            fetch('/get_currently_playing')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('currently_playing').textContent = data.currently_playing;
+                });
+        }
+
+        // Call the updateCurrentlyPlaying function every 5 seconds (5000 milliseconds)
+        setInterval(updateCurrentlyPlaying, 2000);
     </script>
 </head>
 <body>
-    <h1>Swiftomatic 3000 Playback Schedule</h1>
-    <div class="schedule-container">
+    <div class="container">
+        <h1 class="my-4">Swiftomatic 3000 Playback Schedule</h1>
+        
         <form action="/update_schedule" method="POST">
-            <table>
-                <tr>
-                    <th>Daily Start Time</th>
-                    <th>Daily End Time</th>
-                    <th></th>
-                </tr>
-                {% for start_time, end_time in playback_schedule %}
-                <tr>
-                    <td><input type="text" name="start_time_{{ loop.index0 }}" value="{{ start_time }}"></td>
-                    <td><input type="text" name="end_time_{{ loop.index0 }}" value="{{ end_time }}"></td>
-                    <td>
-                        <button type="button" onclick="deleteRow({{ loop.index0 }})">Delete</button>
-                    </td>
-                </tr>
-                {% endfor %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Daily Start Time</th>
+                        <th scope="col">Daily End Time</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for start_time, end_time in playback_schedule %}
+                    <tr>
+                        <td><input type="text" class="form-control" name="start_time_{{ loop.index0 }}" value="{{ start_time }}"></td>
+                        <td><input type="text" class="form-control" name="end_time_{{ loop.index0 }}" value="{{ end_time }}"></td>
+                        <td>
+                            <button type="button" class="btn btn-danger" onclick="deleteRow({{ loop.index0 }})">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
-            <button type="submit" class="button">Update Schedule</button>
+            <button type="submit" class="btn btn-primary">Update Schedule</button>
         </form>
         <form id="delete_row_form" method="POST" style="display: none;"></form>
-    </div>
 
-    <div class="add-row-container">
-        <form action="/add_row" method="POST" class="button-form" style="display: inline;">
-            <button type="submit" class="button">Add Row</button>
-        </form>
-    </div>
+        <div class="my-3">
+            <form action="/add_row" method="POST" class="button-form" style="display: inline;">
+                <button type="submit" class="btn btn-success">Add Row</button>
+            </form>
+        </div>
 
-    <table>
-        <tr>
-            <td class="control-buttons">
+        <div class="row">
+            <div class="col-sm">
                 <form action="/start_playback" method="POST" class="button-form">
-                    <button type="submit" class="button">Start Playback</button>
+                    <button type="submit" class="btn btn-primary">Start Playback</button>
                 </form>
-            </td>
-            <td class="control-buttons">
+            </div>
+            <div class="col-sm">
                 <form action="/stop_playback" method="POST" class="button-form">
-                    <button type="submit" class="button">Stop Playback</button>
+                    <button type="submit" class="btn btn-secondary">Stop Playback</button>
                 </form>
-            </td>
-        </tr>
-    </table>
+            </div>
+            <div class="col-sm">
+                <a href="/upload" class="btn btn-info">Upload MP3</a>
+            </div>
+        </div>
 
-    <h2>Current Schedule</h2>
-    <p>Daily Start Time: {{ current_schedule.start_time }}</p>
-    <p>Daily End Time: {{ current_schedule.end_time }}</p>
-    
-    <h2>Next Schedule</h2>
-    <p>Daily Start Time: {{ next_schedule.start_time }}</p>
-    <p>Daily End Time: {{ next_schedule.end_time }}</p>
-    
-    <h2>Currently Playing MP3</h2>
-    <p>{{ currently_playing }}</p>
-    
+        <h2 class="my-4">Current Schedule</h2>
+        <p>Daily Start Time: {{ current_schedule.start_time }}</p>
+        <p>Daily End Time: {{ current_schedule.end_time }}</p>
+        
+        <h2 class="my-4">Next Schedule</h2>
+        <p>Daily Start Time: {{ next_schedule.start_time }}</p>
+        <p>Daily End Time: {{ next_schedule.end_time }}</p>
+        
+        <h2 class="my-4">Currently Playing MP3</h2>
+        <p id="currently_playing">{{ currently_playing }}</p>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
