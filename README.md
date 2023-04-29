@@ -21,8 +21,7 @@ The Raspberry pi host a web site where playback scheduling and audio files can b
 `http://<devicename>.local:5000` where `<devicename>` is the name that you call the raspberry pi in configuration part 1 section below.
 
 ### **Playback scheduling:**
-Daily start and stop times can be set via a convenient web site.
-Shows current schedule, next schedule and the name of the file currently being played:
+Daily start and stop times can be set. Shows current schedule, next schedule and the name of the file currently being played:
 ![Alt text](images/GIU_schedule.jpeg)
 
 
