@@ -1,7 +1,6 @@
 # swift-auto-caller
 
 
-
 ## The Swiftomatic 3000
 * Plays swift calls at specified intervals.  
 * Uses a Raspberry zero W + DAC to provide an Aux in audio feed to an inexpensive amp which in turn plays calls via a connected speaker.
