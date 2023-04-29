@@ -23,12 +23,26 @@ import time
 import datetime
 import threading
 import argparse
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+
 import datetime # used by get_current_schedule(), get_next_schedule()
+
+# needed for the file uplaod facility
+import os
+from werkzeug.utils import secure_filename
+
+import shutil # used by delete_file()
+
+# controsl while file types are alloed to be uploaded
+ALLOWED_EXTENSIONS = {'mp3'}
 
 # to hold the name of the mp3 that is currently playing
 currently_playing = ""
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# --- scheduling functions...
 
 def get_current_schedule():
     now_dt = datetime.datetime.now()
@@ -41,7 +55,6 @@ def get_current_schedule():
         if start_time_dt <= now <= end_time_dt:
             return {"start_time": start_time, "end_time": end_time}
     return {"start_time": "N/A", "end_time": "N/A"}
-
 
 
 def get_next_schedule():
@@ -201,6 +214,9 @@ def stop_playback():
 
 # Flask app and routes
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = folder_path
+# Flask requires a secret_key to be set for the application to use session-based features, like flashing messages.
+app.secret_key = 'your_secret_key_here'
 
 # @app.route('/')
 # def index():
@@ -266,6 +282,44 @@ def delete_row(row_index):
         del playback_schedule[row_index]
     return redirect(url_for('index'))
 
+@app.route('/get_currently_playing')
+def get_currently_playing_route():
+    return jsonify({"currently_playing": get_currently_playing_mp3()})
+
+
+# upload page routes..
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            flash('File uploaded successfully')
+            return redirect(url_for('upload_file'))
+    
+    mp3_files = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) if f.lower().endswith('.mp3')]
+    return render_template('upload.html', mp3_files=mp3_files)
+
+@app.route('/delete_file/<path:filename>', methods=['POST'])
+def delete_file(filename):
+    try:
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        os.remove(file_path)
+        flash('File deleted successfully')
+    except Exception as e:
+        flash('Error deleting file: {}'.format(e))
+
+    return redirect(url_for('upload_file'))
+
+
+# Add this route to render the upload page
+@app.route('/upload')
+def upload():
+    mp3_files = get_all_mp3_files()
+    sorted_mp3_files = sorted(mp3_files)
+    return render_template('upload.html', mp3_files=sorted_mp3_files)
 
 
 # Run the script in separate threads
