@@ -163,6 +163,7 @@ for f in media_files:
 
 # Define functions
 def play_mp3(folder_path, media_file, start_time, end_time):
+    global player
     instance = vlc.Instance('--aout=alsa')
     player = instance.media_player_new()
     media = instance.media_new(os.path.join(folder_path, media_file))
@@ -176,6 +177,34 @@ def play_mp3(folder_path, media_file, start_time, end_time):
             break
     player.stop()
     instance.release()
+
+def update_volume(volume):
+    global player
+    if player:
+        player.audio_set_volume(volume)
+
+def save_volume_to_file(volume):
+    with open('volume.txt', 'w') as f:
+        f.write(str(volume))
+
+
+def load_volume_from_file():
+    if os.path.exists('volume.txt'):
+        with open('volume.txt', 'r') as f:
+            volume = int(f.read().strip())
+    else:
+        volume = 50  # default volume if no file exists
+    return volume
+
+
+# Add a global variable for the VLC player after the stop_flag variable
+player = None
+initial_volume = load_volume_from_file()
+update_volume(initial_volume)
+
+
+
+
 
 def play_media_files_in_loop():
     global currently_playing
@@ -247,15 +276,12 @@ def get_sorted_mp3_files():
 
 
 
+
 # Flask app and routes
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = folder_path
 # Flask requires a secret_key to be set for the application to use session-based features, like flashing messages.
 app.secret_key = 'your_secret_key_here'
-
-# @app.route('/')
-# def index():
-#     return render_template('index.html', playback_schedule=playback_schedule)
 
 # Update the index route to pass the current_schedule, next_schedule, and currently_playing to the template
 @app.route('/')
@@ -264,8 +290,6 @@ def index():
     next_schedule = get_next_schedule()
     currently_playing = get_currently_playing_mp3()
     return render_template('index.html', playback_schedule=playback_schedule, current_schedule=current_schedule, next_schedule=next_schedule, currently_playing=currently_playing)
-
-
 
 
 @app.route('/update_schedule', methods=['POST'])
@@ -330,6 +354,19 @@ def get_currently_playing():
         return jsonify(currently_playing=currently_playing, duration=duration)
     else:
         return jsonify(currently_playing="Nothing is playing right now.")
+
+@app.route('/set_volume', methods=['POST'])
+def set_volume():
+    volume = request.json.get('volume', 50)
+    update_volume(int(volume))
+    save_volume_to_file(volume)
+    return jsonify({"success": True})
+
+@app.route('/get_saved_volume', methods=['GET'])
+def get_saved_volume():
+    volume = load_volume_from_file()
+    return jsonify({'volume': volume})
+
 
 
 # upload page routes..
