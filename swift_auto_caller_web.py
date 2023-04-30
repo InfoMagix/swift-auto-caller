@@ -66,6 +66,7 @@ def get_next_schedule():
     next_start_time = None
     next_end_time = None
     min_time_diff = float('inf')
+    next_schedule_tomorrow = False
 
     for start_time, end_time in playback_schedule:
         start_hour, start_minute = map(int, start_time.split(':'))
@@ -77,10 +78,23 @@ def get_next_schedule():
                 min_time_diff = time_diff
                 next_start_time = start_time
                 next_end_time = end_time
+                next_schedule_tomorrow = False
+
+    if next_start_time is None:  # No next schedule today, check for tomorrow
+        min_time_diff = float('inf')
+        for start_time, end_time in playback_schedule:
+            start_hour, start_minute = map(int, start_time.split(':'))
+            scheduled_start_time = now_dt.replace(hour=start_hour, minute=start_minute, second=0, microsecond=0) + datetime.timedelta(days=1)
+            time_diff = (scheduled_start_time - now_dt).seconds
+            if time_diff < min_time_diff:
+                min_time_diff = time_diff
+                next_start_time = start_time
+                next_end_time = end_time
+                next_schedule_tomorrow = True
 
     if next_start_time and next_end_time:
-        return {"start_time": next_start_time, "end_time": next_end_time}
-    return {"start_time": "N/A", "end_time": "N/A"}
+        return {"start_time": next_start_time, "end_time": next_end_time, "tomorrow": next_schedule_tomorrow}
+    return {"start_time": "N/A", "end_time": "N/A", "tomorrow": False}
 
 
 def get_currently_playing_mp3():
@@ -252,7 +266,6 @@ def index():
     next_schedule = get_next_schedule()
     currently_playing = get_currently_playing_mp3()
     return render_template('index.html', playback_schedule=playback_schedule, current_schedule=current_schedule, next_schedule=next_schedule, currently_playing=currently_playing)
-
 
 
 

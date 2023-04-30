@@ -89,8 +89,9 @@
         <p>Daily End Time: {{ current_schedule.end_time }}</p>
         
         <h2 class="my-4">Next Schedule</h2>
-        <p>Daily Start Time: {{ next_schedule.start_time }}</p>
-        <p>Daily End Time: {{ next_schedule.end_time }}</p>
+        <p>Daily Start Time: {{ next_schedule.start_time }}{% if next_schedule.tomorrow %} (tomorrow){% endif %}</p>
+        <p>Daily End Time: {{ next_schedule.end_time }}{% if next_schedule.tomorrow %} (tomorrow){% endif %}</p>
+        
         
         <h2>Currently Playing MP3</h2>
         <p id="currently_playing">{{ currently_playing }}</p>
