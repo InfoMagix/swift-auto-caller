@@ -16,25 +16,23 @@
 #     - Provide debug information, such as scheduled events and playback times.
 
 
-import vlc
-import os
-import schedule
-import time
-import datetime
-import threading
-import argparse
+import vlc                     # needed for VLC media player functionality
+import os                      # used for file manipulation and os-related functions
+import schedule                # used for scheduling tasks
+import time                    # used for sleep() function
+import datetime                # used by get_current_schedule(), get_next_schedule()
+import threading               # used for running tasks in parallel
+import argparse                # used for handling command-line arguments
+
 from flask import Flask, request, redirect, url_for, jsonify, render_template, flash, send_from_directory
-from mutagen.mp3 import MP3
-from datetime import timedelta
+from mutagen.mp3 import MP3    # used for handling MP3 metadata
+from datetime import timedelta # used for datetime calculations
 
-
-import datetime # used by get_current_schedule(), get_next_schedule()
-
-# needed for the file uplaod facility
-import os
+# needed for the file upload facility
 from werkzeug.utils import secure_filename
 
-import shutil # used by delete_file()
+import shutil                  # used by delete_file()
+
 
 # controsl while file types are alloed to be uploaded
 ALLOWED_EXTENSIONS = {'mp3'}
@@ -269,6 +267,7 @@ def index():
 
 
 
+
 @app.route('/update_schedule', methods=['POST'])
 def update_schedule():
     global playback_schedule
@@ -307,9 +306,13 @@ def stop_playback_route():
 @app.route('/add_row', methods=['POST'])
 def add_row():
     global playback_schedule
-    playback_schedule.append(("00:00", "00:00"))
+    now = datetime.datetime.now()
+    default_start_time = (now + timedelta(hours=1)).strftime('%H:%M')
+    default_end_time = (now + timedelta(hours=2)).strftime('%H:%M')
+    playback_schedule.append((default_start_time, default_end_time))
     playback_schedule.sort()
     return redirect(url_for('index'))
+
 
 @app.route('/delete_row/<int:row_index>', methods=['POST'])
 def delete_row(row_index):
