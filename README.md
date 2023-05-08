@@ -21,7 +21,7 @@ The Raspberry pi host a web site where playback scheduling and audio files can b
 
 ### **Playback scheduling:**
 Daily start and stop times can be set. Shows current schedule, next schedule and the name of the file currently being played:
-![Alt text](images/GIU_schedule.jpeg)
+![Alt text](images/GIU_schedule2.jpeg)
 
 
 ### **Audio file upload:**
