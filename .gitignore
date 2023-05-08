@@ -1,5 +1,6 @@
 # specific to this repo
 playback_schedule.txt
+.vscode/
 
 
 # Byte-compiled / optimized / DLL files
