@@ -202,14 +202,27 @@ player = None
 initial_volume = load_volume_from_file()
 update_volume(initial_volume)
 
+# used when debugging today vs tomorrow schedule transition.
+# sets now = 3 minutes to midnight
+
+start_time = time.time()
+
+def three_minutes_to_midnight():
+    global start_time
+    elapsed_time = time.time() - start_time
+    now = datetime.datetime.now()
+    now = now.replace(hour=23, minute=57, second=0, microsecond=0)  # Set the time to three minutes to midnight
+    now += datetime.timedelta(seconds=elapsed_time)  # Add the elapsed time to the simulated now
+    return now
 
 
-
+debug_print("three mins to midnight = " + str(three_minutes_to_midnight()))
 
 def play_media_files_in_loop():
     global currently_playing
     while not stop_flag:
         now = datetime.datetime.now()
+        #now = three_minutes_to_midnight()
         play_period = None
 
         for start_time, end_time in playback_schedule:
@@ -245,6 +258,7 @@ def play_media_files_in_loop():
                 scheduled_start_time += datetime.timedelta(days=1)
 
             debug_print(f"Waiting for next play period: {next_start_time} - {next_end_time}")
+            # debug_print(f"Waiting for next play period: {next_start_time} - {next_end_time}"+", now = "+str(three_minutes_to_midnight()))
             time_to_next_period = (scheduled_start_time - now).total_seconds()
             time.sleep(min(1, time_to_next_period))
 
