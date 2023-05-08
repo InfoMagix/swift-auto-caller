@@ -241,8 +241,12 @@ def play_media_files_in_loop():
                     next_start_time, next_end_time = start_time, end_time
                     break
 
+            if now > scheduled_start_time:
+                scheduled_start_time += datetime.timedelta(days=1)
+
             debug_print(f"Waiting for next play period: {next_start_time} - {next_end_time}")
-            time.sleep(1)
+            time_to_next_period = (scheduled_start_time - now).total_seconds()
+            time.sleep(min(1, time_to_next_period))
 
 def start_playback():
     global stop_flag
